@@ -1,2 +1,5 @@
 # all intelli files
 /.idea
+
+# datasets
+/src/main/resources/dataset
