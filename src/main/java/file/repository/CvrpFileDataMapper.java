@@ -1,5 +1,6 @@
-package file;
+package file.repository;
 
+import file.DataPrefix;
 import file.error.InvalidSingleLineValueExtractionError;
 import file.error.WrongFileDataException;
 import model.CvrpData;
@@ -74,7 +75,7 @@ public class CvrpFileDataMapper {
         int yCoordinate = Integer.parseInt(coordinates[3]);
         int demand = Integer.parseInt(demands[1]);
 
-        return new City(xCoordinate, yCoordinate, demand);
+        return new City(cityNumber, xCoordinate, yCoordinate, demand);
     }
 
     private String extractCityDetail(int cityNumber, DataPrefix dataPrefix) {
