@@ -1,6 +1,8 @@
 package model;
 
-import model.city.CitiesMap;
+import model.city.City;
+import model.city.DeliveryCitiesMap;
+import model.truck.Truck;
 
 import java.util.Objects;
 
@@ -9,20 +11,23 @@ public class CvrpData {
     private final String comment;
 
     private final int citiesAmount;
-    private final int truckCapacity;
+    private final Truck truck;
 
-    private final CitiesMap citiesMap;
+    private final DeliveryCitiesMap deliveryCitiesMap;
+    private final City depotCity;
 
     public CvrpData(String name,
                     String comment,
                     int citiesAmount,
                     int truckCapacity,
-                    CitiesMap citiesMap) {
+                    DeliveryCitiesMap deliveryCitiesMap,
+                    City depotCity) {
         this.name = name;
         this.comment = comment;
         this.citiesAmount = citiesAmount;
-        this.truckCapacity = truckCapacity;
-        this.citiesMap = citiesMap;
+        this.truck = new Truck(truckCapacity);
+        this.deliveryCitiesMap = deliveryCitiesMap;
+        this.depotCity = depotCity;
     }
 
     public String getName() {
@@ -37,12 +42,16 @@ public class CvrpData {
         return citiesAmount;
     }
 
-    public int getTruckCapacity() {
-        return truckCapacity;
+    public Truck getTruck() {
+        return truck;
     }
 
-    public CitiesMap getCitiesMap() {
-        return citiesMap;
+    public DeliveryCitiesMap getDeliveryCitiesMap() {
+        return deliveryCitiesMap;
+    }
+
+    public City getDepotCity() {
+        return depotCity;
     }
 
     @Override
@@ -50,11 +59,16 @@ public class CvrpData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CvrpData that = (CvrpData) o;
-        return citiesAmount == that.citiesAmount && truckCapacity == that.truckCapacity && Objects.equals(name, that.name) && Objects.equals(comment, that.comment) && Objects.equals(citiesMap, that.citiesMap);
+        return citiesAmount == that.citiesAmount &&
+                truck.equals(that.truck) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(comment, that.comment) &&
+                Objects.equals(deliveryCitiesMap, that.deliveryCitiesMap) &&
+                Objects.equals(depotCity, that.depotCity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, comment, citiesAmount, truckCapacity, citiesMap);
+        return Objects.hash(name, comment, citiesAmount, truck, deliveryCitiesMap, depotCity);
     }
 }

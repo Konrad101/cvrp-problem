@@ -2,13 +2,15 @@ package model.city;
 
 import java.util.Objects;
 
+import static model.city.CityType.*;
+
 public class City {
 
     private final int number;
     private final int xCoordinate;
     private final int yCoordinate;
-
     private final int demand;
+    private CityType cityType;
 
     public City(int number,
                 int xCoordinate,
@@ -18,6 +20,11 @@ public class City {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.demand = demand;
+        cityType = DELIVERY_CITY;
+    }
+
+    public int getNumber() {
+        return number;
     }
 
     public int getXCoordinate() {
@@ -32,24 +39,29 @@ public class City {
         return demand;
     }
 
-    public int getNumber() {
-        return number;
+    public CityType getCityType() {
+        return cityType;
+    }
+
+    public void convertCityTypeToDepot(){
+        cityType = DEPOT_CITY;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        City city = (City) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        City city = (City) obj;
         return number == city.number &&
                 xCoordinate == city.xCoordinate &&
                 yCoordinate == city.yCoordinate &&
-                demand == city.demand;
+                demand == city.demand &&
+                cityType == city.cityType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, xCoordinate, yCoordinate, demand);
+        return Objects.hash(number, xCoordinate, yCoordinate, demand, cityType);
     }
 
     @Override

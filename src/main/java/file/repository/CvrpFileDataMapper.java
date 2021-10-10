@@ -4,18 +4,18 @@ import file.DataPrefix;
 import file.error.InvalidSingleLineValueExtractionError;
 import file.error.WrongFileDataException;
 import model.CvrpData;
-import model.city.CitiesMap;
+import model.city.DeliveryCitiesMap;
 import model.city.City;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static file.DataPrefix.*;
 import static java.util.stream.IntStream.range;
 
 public class CvrpFileDataMapper {
 
+    private static final int DEFAULT_DEPOT_CITY_NUMBER = 1;
     private static final String DATA_DELIMITER = " : ";
 
     private final List<String> fileData;
@@ -31,14 +31,32 @@ public class CvrpFileDataMapper {
         int citiesAmount = extractCitiesAmount();
         int capacity = extractCapacity();
 
-        CitiesMap citiesMap = extractCitiesDetails(citiesAmount);
+        Collection<City> cities = extractCitiesDetails(citiesAmount);
+        City depotCity = extractDepotFromCities(cities);
+        cities = cities.stream()
+                .filter(city -> city.getNumber() != depotCity.getNumber())
+                .collect(Collectors.toUnmodifiableList());
+        DeliveryCitiesMap deliveryCitiesMap = new DeliveryCitiesMap(cities);
 
         return new CvrpData(
                 name,
                 comment,
                 citiesAmount,
                 capacity,
-                citiesMap);
+                deliveryCitiesMap,
+                depotCity);
+    }
+
+    private City extractDepotFromCities(Collection<City> cities) {
+        Optional<City> depot = cities.stream()
+                .filter(city -> city.getNumber() == DEFAULT_DEPOT_CITY_NUMBER)
+                .findFirst();
+
+        if(depot.isEmpty()) throw new IllegalArgumentException("cities does not contain depot city");
+
+        City depotCity = depot.get();
+        depotCity.convertCityTypeToDepot();
+        return depotCity;
     }
 
     private String extractName() {
@@ -57,14 +75,14 @@ public class CvrpFileDataMapper {
         return Integer.parseInt(extractValue(CAPACITY));
     }
 
-    private CitiesMap extractCitiesDetails(int citiesAmount) {
-        List<City> cities = new ArrayList<>();
+    private Collection<City> extractCitiesDetails(int citiesAmount) {
+        Collection<City> cities = new HashSet<>();
         range(1, citiesAmount + 1)
                 .forEach(cityNumber -> cities.add(
                         extractCity(cityNumber)
                 ));
 
-        return new CitiesMap(cities);
+        return cities;
     }
 
     private City extractCity(int cityNumber) {

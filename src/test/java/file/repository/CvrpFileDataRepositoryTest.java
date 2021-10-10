@@ -26,7 +26,7 @@ class CvrpFileDataRepositoryTest {
                 .isEqualTo("A-n32-k5");
         assertThat(cvrpData.getCitiesAmount())
                 .isEqualTo(32);
-        assertThat(cvrpData.getCitiesMap().getCities().size())
-                .isEqualTo(32);
+        assertThat(cvrpData.getDeliveryCitiesMap().getCities().size())
+                .isEqualTo(31);
     }
 }
