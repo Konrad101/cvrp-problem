@@ -21,5 +21,7 @@ public class Main {
         SolvedPath solution = providerService.getSolution();
         SolutionPresenter solutionPresenter = new SolutionPresenter(solution, cvrpData);
         solutionPresenter.printSolution();
+        solutionPresenter.printEvaluation();
+
     }
 }

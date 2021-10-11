@@ -9,6 +9,8 @@ import model.truck.Truck;
 
 import java.util.List;
 
+import static solution.evaluator.SolutionEvaluator.evaluate;
+
 public class SolutionPresenter {
 
     private final SolvedPath solvedPath;
@@ -17,6 +19,11 @@ public class SolutionPresenter {
     public SolutionPresenter(SolvedPath solvedPath, CvrpData cvrpData) {
         this.solvedPath = solvedPath;
         this.cvrpData = cvrpData;
+    }
+
+    public void printEvaluation() {
+        double solutionEvaluation = evaluate(solvedPath);
+        System.out.println("Evaluation result: " + solutionEvaluation);
     }
 
     public void printSolution() {
