@@ -7,7 +7,9 @@ public class CityDistanceCalculator {
     private CityDistanceCalculator() {
     }
 
-    public static double calculateDistance(City originPlace, City destinationPlace) {
+    public static double calculateDistance(CitiesConnection connection) {
+        City originPlace = connection.getOriginPlace();
+        City destinationPlace = connection.getDestinationPlace();
         return Point2D.distance(
                 originPlace.getXCoordinate(),
                 originPlace.getYCoordinate(),
