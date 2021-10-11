@@ -27,6 +27,13 @@ public class Truck {
             throw new InsufficientGoodsQuantityException(
                     "There are not enough goods in the truck, tried to unload " + amount + ", but truck had " + goodsAmount);
         }
+        goodsAmount -= amount;
     }
 
+    @Override
+    public String toString() {
+        return "Truck{" +
+                "goodsAmount=" + goodsAmount +
+                '}';
+    }
 }

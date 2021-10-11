@@ -66,11 +66,12 @@ public class City {
 
     @Override
     public String toString() {
-        return "City{ " +
+        return "City{" +
                 "number=" + number +
                 ", xCoordinate=" + xCoordinate +
                 ", yCoordinate=" + yCoordinate +
                 ", demand=" + demand +
-                " }";
+                ", cityType=" + cityType +
+                '}';
     }
 }

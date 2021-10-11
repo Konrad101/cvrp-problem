@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class TextFileDataReader {
+class TextFileDataReader {
 
     private static final Logger log = LoggerFactory.getLogger(TextFileDataReader.class);
 
@@ -19,7 +19,6 @@ public class TextFileDataReader {
 
     public static List<String> readFileContent(String filePath) {
         Path path = Paths.get(filePath);
-        System.out.println(path.toAbsolutePath());
         try {
             return Files.readAllLines(path);
         } catch (IOException ex) {
