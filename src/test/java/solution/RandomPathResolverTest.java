@@ -34,6 +34,7 @@ class RandomPathResolverTest {
 
         // then
         assertThatSolvedPath(optimalPath)
-                .doesNotRepeatDeliveryCity();
+                .doesNotRepeatDeliveryCity()
+                .isPossibleToRideByTruck(cvrpData.getTruck());
     }
 }

@@ -1,9 +1,9 @@
 package solution;
 
-import model.CvrpData;
 import model.SolvedPath;
 import model.city.CitiesConnection;
 import model.city.City;
+import model.truck.Truck;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static model.city.CityType.DELIVERY_CITY;
+import static model.city.CityType.DEPOT_CITY;
 
 public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, SolvedPath> {
 
@@ -23,6 +24,29 @@ public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, Sol
 
     public static SolvedPathAssertion assertThatSolvedPath(SolvedPath solvedPath) {
         return new SolvedPathAssertion(solvedPath);
+    }
+
+    // method should throw InsufficientGoodsQuantityException if there will be not enough goods in truck while unloading
+    public SolvedPathAssertion isPossibleToRideByTruck(Truck truck) {
+        isNotNull();
+
+        List<CitiesConnection> connections = actual.getConnections();
+
+        connections.forEach(
+                connection -> resolveLoadingForCity(truck, connection.getOriginPlace()));
+
+        resolveLoadingForCity(truck, connections.get(connections.size() - 1)
+                .getDestinationPlace());
+
+        return this;
+    }
+
+    private void resolveLoadingForCity(Truck truck, City city) {
+        if(city.getCityType() == DELIVERY_CITY) {
+            truck.unload(city.getDemand());
+        } else if (city.getCityType() == DEPOT_CITY) {
+            truck.load();
+        }
     }
 
     public SolvedPathAssertion doesNotRepeatDeliveryCity() {
