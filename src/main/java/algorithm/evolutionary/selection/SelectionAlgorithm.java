@@ -2,9 +2,9 @@ package algorithm.evolutionary.selection;
 
 import model.SolvedPath;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface SelectionAlgorithm {
 
-    SolvedPath selectFromPopulation(Collection<SolvedPath> population);
+    SolvedPath selectFromPopulation(List<SolvedPath> population);
 }
