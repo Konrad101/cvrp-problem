@@ -1,9 +1,9 @@
-package solution.resolver;
+package algorithm;
 
 import model.CvrpData;
 import model.SolvedPath;
 
-public interface PathResolver {
+public interface PathResolverAlgorithm {
 
     SolvedPath findOptimalPath(CvrpData cvrpData);
 }

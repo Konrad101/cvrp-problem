@@ -1,4 +1,4 @@
-package solution.resolver;
+package algorithm.random;
 
 import model.CvrpData;
 import model.SolvedPath;
@@ -6,13 +6,12 @@ import model.city.CitiesConnection;
 import model.city.City;
 import model.city.DeliveryCitiesMap;
 import model.truck.Truck;
+import algorithm.PathResolverAlgorithm;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.List.copyOf;
-
-public class RandomPathResolver implements PathResolver {
+public class RandomPathResolverAlgorithm implements PathResolverAlgorithm {
 
     private static final Random random = new Random();
 

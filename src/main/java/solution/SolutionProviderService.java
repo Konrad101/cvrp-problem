@@ -2,14 +2,14 @@ package solution;
 
 import model.CvrpData;
 import model.SolvedPath;
-import solution.resolver.PathResolver;
+import algorithm.PathResolverAlgorithm;
 
 public class SolutionProviderService {
 
-    private final PathResolver resolver;
+    private final PathResolverAlgorithm resolver;
     private final CvrpData cvrpData;
 
-    public SolutionProviderService(PathResolver resolver,
+    public SolutionProviderService(PathResolverAlgorithm resolver,
                                    CvrpData cvrpData) {
         this.resolver = resolver;
         this.cvrpData = cvrpData;

@@ -6,21 +6,21 @@ import model.CvrpData;
 import model.SolvedPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import solution.resolver.RandomPathResolver;
+import algorithm.random.RandomPathResolverAlgorithm;
 
 import static solution.SolvedPathAssertion.assertThatSolvedPath;
 
-class RandomPathResolverTest {
+class RandomPathResolverAlgorithmTest {
 
     private static final String FILE_PATH = "src\\main\\resources\\dataset\\basic\\A-n32-k5.vrp";
 
     private FileRepository fileRepository;
-    private RandomPathResolver pathResolver;
+    private RandomPathResolverAlgorithm pathResolver;
 
     @BeforeEach
     void initialize() {
         fileRepository = new CvrpFileDataRepository();
-        pathResolver = new RandomPathResolver();
+        pathResolver = new RandomPathResolverAlgorithm();
     }
 
 

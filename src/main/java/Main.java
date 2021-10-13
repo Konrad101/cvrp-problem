@@ -4,8 +4,8 @@ import model.CvrpData;
 import model.SolvedPath;
 import solution.SolutionPresenter;
 import solution.SolutionProviderService;
-import solution.resolver.PathResolver;
-import solution.resolver.RandomPathResolver;
+import algorithm.PathResolverAlgorithm;
+import algorithm.random.RandomPathResolverAlgorithm;
 
 public class Main {
 
@@ -15,7 +15,7 @@ public class Main {
         FileRepository repository = new CvrpFileDataRepository();
         CvrpData cvrpData = repository.getCvrpData(CVRP_PROBLEM_FILE_PATH);
 
-        PathResolver resolver = new RandomPathResolver();
+        PathResolverAlgorithm resolver = new RandomPathResolverAlgorithm();
         SolutionProviderService providerService = new SolutionProviderService(resolver, cvrpData);
 
         SolvedPath solution = providerService.getSolution();
