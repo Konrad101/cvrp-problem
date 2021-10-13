@@ -16,10 +16,10 @@ public class TournamentSelection implements SelectionAlgorithm {
 
     @Override
     public SolvedPath selectFromPopulation(List<SolvedPath> population) {
-        int endIndex = (int) (TOURNAMENT_SIZE * population.size());
-        int startIndex = random.nextInt(population.size() - endIndex);
+        int solutionsAmount = (int) (TOURNAMENT_SIZE * population.size());
+        int startIndex = random.nextInt(population.size() - solutionsAmount);
 
-        List<SolvedPath> selectedSolutions = population.subList(startIndex, endIndex);
+        List<SolvedPath> selectedSolutions = population.subList(startIndex, startIndex + solutionsAmount);
 
         SolvedPath bestSolution = selectedSolutions.get(0);
         double bestSolutionEvaluation = evaluate(bestSolution);
