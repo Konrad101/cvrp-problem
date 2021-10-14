@@ -4,5 +4,5 @@ import model.SolvedPath;
 
 public interface Mutator {
 
-    void mutation(SolvedPath solution, double probability);
+    SolvedPath mutation(SolvedPath solution);
 }

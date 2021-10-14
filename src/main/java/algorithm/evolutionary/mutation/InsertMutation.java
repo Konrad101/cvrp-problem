@@ -5,7 +5,9 @@ import model.SolvedPath;
 public class InsertMutation implements Mutator {
 
     @Override
-    public void mutation(SolvedPath solution, double probability) {
+    public SolvedPath mutation(SolvedPath solution) {
+        // inwersja segmentu
 
+        return null;
     }
 }

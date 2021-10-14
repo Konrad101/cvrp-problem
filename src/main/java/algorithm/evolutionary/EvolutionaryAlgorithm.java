@@ -65,14 +65,13 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
 
             while (newPopulation.size() != POPULATION_SIZE) {
                 SolvedPath child = createNewChild(population);
-                mutator.mutation(child, MUTATION_PROBABILITY);
 
                 newPopulation.add(child);
 
                 double childEvaluation = evaluate(child);
                 newPopulationEvaluations.add(childEvaluation);
 
-                if(shortestPath > childEvaluation) {
+                if (shortestPath > childEvaluation) {
                     shortestPath = childEvaluation;
                     bestSolution = child;
                 }
@@ -90,21 +89,27 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
         SolvedPath firstParent = selectionAlgorithm.selectFromPopulation(population);
         SolvedPath secondParent = selectionAlgorithm.selectFromPopulation(population);
 
-        return random.nextDouble() <= CROSSOVER_PROBABILITY ?
+        SolvedPath child = random.nextDouble() <= CROSSOVER_PROBABILITY ?
                 crossoverAlgorithm.crossover(firstParent, secondParent) :
                 firstParent;
+
+        if (random.nextDouble() <= MUTATION_PROBABILITY) {
+            child = mutator.mutation(child);
+        }
+
+        return child;
     }
 
     private PopulationResult extractResultFromEvaluations(List<Double> evaluations) {
         double best = evaluations.get(0);
-        double worst= evaluations.get(0);
+        double worst = evaluations.get(0);
         double sumOfEvaluations = 0;
 
-        for(Double evaluation : evaluations) {
+        for (Double evaluation : evaluations) {
             sumOfEvaluations += evaluation;
 
-            if(best > evaluation) best = evaluation;
-            if(worst < evaluation) worst = evaluation;
+            if (best > evaluation) best = evaluation;
+            if (worst < evaluation) worst = evaluation;
         }
 
         double average = sumOfEvaluations / evaluations.size();
