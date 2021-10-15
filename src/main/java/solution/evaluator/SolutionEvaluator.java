@@ -15,8 +15,7 @@ public class SolutionEvaluator {
         List<CitiesConnection> connections = solution.getConnections();
 
         return connections.stream()
-                .map(CityDistanceCalculator::calculateDistance)
-                .mapToDouble(Double::doubleValue)
+                .mapToDouble(CityDistanceCalculator::calculateDistance)
                 .sum();
     }
 }
