@@ -34,7 +34,7 @@ public class RandomPathResolver implements PathResolverAlgorithm {
 
         Set<City> citiesWithoutConnection = new HashSet<>(cities);
 
-        City originCity = cities.iterator().next();
+        City originCity = selectRandomDestinationCity(citiesWithoutConnection);
         citiesWithoutConnection.remove(originCity);
 
         while (!citiesWithoutConnection.isEmpty()) {
