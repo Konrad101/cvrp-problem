@@ -4,7 +4,6 @@ import model.CvrpData;
 import model.SolvedPath;
 import model.city.CitiesConnection;
 import model.city.City;
-import model.city.CityType;
 import model.truck.Truck;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class SolutionPresenter {
         for (CitiesConnection connection : connections) {
             City visitedPlace = connection.getOriginPlace();
 
-            if (visitedPlace.getCityType() == CityType.DEPOT_CITY) {
+            if (visitedPlace.isDepotCity()) {
                 truck.load();
             }
             truck.unload(visitedPlace.getDemand());

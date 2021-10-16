@@ -2,7 +2,13 @@ package algorithm;
 
 import file.repository.CvrpFileDataRepository;
 import file.repository.FileRepository;
+import model.CvrpData;
+import model.SolvedPath;
+import model.truck.Truck;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static solution.SolvedPathAssertion.assertThatSolvedPath;
 
 public abstract class TestBase {
 
@@ -15,5 +21,13 @@ public abstract class TestBase {
     @BeforeEach
     void initialize() {
         fileRepository = new CvrpFileDataRepository();
+    }
+
+    protected void assertThatSolvedPathIsValid(SolvedPath solvedPath, Truck truck) {
+        assertThatSolvedPath(solvedPath)
+                .doesNotRepeatDeliveryCity()
+                .doesNotRepeatDepotCityAfterDepotCity()
+                .isPossibleToRideByTruck(truck)
+                .startsAndEndsWithDepotCity();
     }
 }

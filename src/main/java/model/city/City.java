@@ -39,8 +39,12 @@ public class City {
         return demand;
     }
 
-    public CityType getCityType() {
-        return cityType;
+    public boolean isDepotCity() {
+        return cityType == DEPOT_CITY;
+    }
+
+    public boolean isDeliveryCity() {
+        return cityType == DELIVERY_CITY;
     }
 
     public void convertCityTypeToDepot(){

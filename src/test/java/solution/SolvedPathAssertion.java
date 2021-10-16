@@ -7,12 +7,7 @@ import model.truck.Truck;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static model.city.CityType.DELIVERY_CITY;
-import static model.city.CityType.DEPOT_CITY;
+import java.util.*;
 
 public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, SolvedPath> {
 
@@ -41,6 +36,23 @@ public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, Sol
         return this;
     }
 
+    public SolvedPathAssertion doesNotRepeatDepotCityAfterDepotCity() {
+        isNotNull();
+
+        List<CitiesConnection> connections = actual.getConnections();
+
+        connections.forEach(connection -> {
+            City originCity = connection.getOriginPlace();
+
+            if (originCity.isDepotCity()) {
+                City destinationCity = connection.getDestinationPlace();
+                Assertions.assertThat(destinationCity.isDepotCity()).isFalse();
+            }
+        });
+
+        return this;
+    }
+
     public SolvedPathAssertion doesNotRepeatDeliveryCity() {
         isNotNull();
 
@@ -62,16 +74,16 @@ public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, Sol
         City firstOriginCity = connections.get(0).getOriginPlace();
         City lastDestinationCity = connections.get(connections.size() - 1).getDestinationPlace();
 
-        Assertions.assertThat(firstOriginCity.getCityType()).isEqualTo(DEPOT_CITY);
-        Assertions.assertThat(lastDestinationCity.getCityType()).isEqualTo(DEPOT_CITY);
+        Assertions.assertThat(firstOriginCity.isDepotCity()).isTrue();
+        Assertions.assertThat(lastDestinationCity.isDepotCity()).isTrue();
 
         return this;
     }
 
     private void resolveLoadingForCity(Truck truck, City city) {
-        if(city.getCityType() == DELIVERY_CITY) {
+        if (city.isDeliveryCity()) {
             truck.unload(city.getDemand());
-        } else if (city.getCityType() == DEPOT_CITY) {
+        } else if (city.isDepotCity()) {
             truck.load();
         }
     }
@@ -87,7 +99,7 @@ public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, Sol
     }
 
     private void determineDeliveryCityOccurrence(Map<City, Integer> deliveryCitiesOccurrences, City city) {
-        if (city.getCityType() == DELIVERY_CITY) {
+        if (city.isDeliveryCity()) {
             int originCityOccurrences = deliveryCitiesOccurrences.getOrDefault(city, 0);
             deliveryCitiesOccurrences.put(city, originCityOccurrences + 1);
         }
