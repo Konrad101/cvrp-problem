@@ -8,8 +8,12 @@ public class CityDistanceCalculator {
     }
 
     public static double calculateDistance(CitiesConnection connection) {
-        City originPlace = connection.getOriginPlace();
-        City destinationPlace = connection.getDestinationPlace();
+        return calculateDistance(
+                connection.getOriginPlace(),
+                connection.getDestinationPlace());
+    }
+
+    public static double calculateDistance(City originPlace, City destinationPlace) {
         return Point2D.distance(
                 originPlace.getXCoordinate(),
                 originPlace.getYCoordinate(),

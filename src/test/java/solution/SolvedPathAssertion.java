@@ -41,14 +41,6 @@ public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, Sol
         return this;
     }
 
-    private void resolveLoadingForCity(Truck truck, City city) {
-        if(city.getCityType() == DELIVERY_CITY) {
-            truck.unload(city.getDemand());
-        } else if (city.getCityType() == DEPOT_CITY) {
-            truck.load();
-        }
-    }
-
     public SolvedPathAssertion doesNotRepeatDeliveryCity() {
         isNotNull();
 
@@ -61,6 +53,27 @@ public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, Sol
         );
 
         return this;
+    }
+
+    public SolvedPathAssertion startsAndEndsWithDepotCity() {
+        isNotNull();
+
+        List<CitiesConnection> connections = actual.getConnections();
+        City firstOriginCity = connections.get(0).getOriginPlace();
+        City lastDestinationCity = connections.get(connections.size() - 1).getDestinationPlace();
+
+        Assertions.assertThat(firstOriginCity.getCityType()).isEqualTo(DEPOT_CITY);
+        Assertions.assertThat(lastDestinationCity.getCityType()).isEqualTo(DEPOT_CITY);
+
+        return this;
+    }
+
+    private void resolveLoadingForCity(Truck truck, City city) {
+        if(city.getCityType() == DELIVERY_CITY) {
+            truck.unload(city.getDemand());
+        } else if (city.getCityType() == DEPOT_CITY) {
+            truck.load();
+        }
     }
 
     private Map<City, Integer> getDeliveryCitiesOccurrences(List<CitiesConnection> connections) {

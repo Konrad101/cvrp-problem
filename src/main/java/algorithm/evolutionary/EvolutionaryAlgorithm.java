@@ -4,7 +4,7 @@ import algorithm.PathResolverAlgorithm;
 import algorithm.evolutionary.crossover.CrossoverAlgorithm;
 import algorithm.evolutionary.mutation.Mutator;
 import algorithm.evolutionary.selection.SelectionAlgorithm;
-import algorithm.random.RandomPathResolverAlgorithm;
+import algorithm.random.RandomPathResolver;
 import model.CvrpData;
 import model.SolvedPath;
 
@@ -119,7 +119,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
 
     private List<SolvedPath> generateRandomPopulation(CvrpData data) {
         List<SolvedPath> population = new ArrayList<>(POPULATION_SIZE);
-        PathResolverAlgorithm pathResolver = new RandomPathResolverAlgorithm();
+        PathResolverAlgorithm pathResolver = new RandomPathResolver();
 
         for (int i = 0; i < POPULATION_SIZE; i++) {
             population.add(pathResolver.findOptimalPath(data));

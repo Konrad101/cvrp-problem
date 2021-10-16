@@ -1,17 +1,16 @@
 package algorithm.random;
 
+import algorithm.PathResolverAlgorithm;
 import model.CvrpData;
 import model.SolvedPath;
 import model.city.CitiesConnection;
 import model.city.City;
 import model.city.DeliveryCitiesMap;
 import model.truck.Truck;
-import algorithm.PathResolverAlgorithm;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class RandomPathResolverAlgorithm implements PathResolverAlgorithm {
+public class RandomPathResolver implements PathResolverAlgorithm {
 
     private static final Random random = new Random();
 
@@ -31,38 +30,30 @@ public class RandomPathResolverAlgorithm implements PathResolverAlgorithm {
         List<CitiesConnection> connections = new ArrayList<>();
         Collection<City> cities = deliveryCitiesMap.getCities();
 
-        List<City> citiesWithoutConnection = new ArrayList<>(cities);
-        City destinationCity = cities.iterator().next();
+        Set<City> citiesWithoutConnection = new HashSet<>(cities);
+
+        City originCity = cities.iterator().next();
+        citiesWithoutConnection.remove(originCity);
 
         while (!citiesWithoutConnection.isEmpty()) {
-            City originCity = destinationCity;
-            citiesWithoutConnection.remove(originCity);
-            destinationCity = selectRandomDestinationCity(citiesWithoutConnection);
-
+            City destinationCity = selectRandomDestinationCity(citiesWithoutConnection);
             connections.add(
                     new CitiesConnection(originCity, destinationCity));
 
-            citiesWithoutConnection = getCitiesWithoutConnection(connections, cities);
+            originCity = destinationCity;
+            citiesWithoutConnection.remove(originCity);
         }
 
         return connections;
     }
 
-    private List<City> getCitiesWithoutConnection(List<CitiesConnection> connections, Collection<City> cities) {
-        Set<City> citiesWithConnection = cities.stream()
-                .filter(city -> connections.stream()
-                        .anyMatch(connection -> connection.containsCity(city)))
-                .collect(Collectors.toSet());
+    private City selectRandomDestinationCity(Collection<City> citiesWithoutConnection) {
 
-        return cities.stream()
-                .filter(city -> !citiesWithConnection.contains(city))
-                .collect(Collectors.toList());
-    }
+        List<City> cities = citiesWithoutConnection instanceof ArrayList ?
+                (ArrayList<City>) citiesWithoutConnection :
+                new ArrayList<>(citiesWithoutConnection);
 
-    private City selectRandomDestinationCity(List<City> citiesWithoutConnection) {
-        return citiesWithoutConnection.get(
-                random.nextInt(citiesWithoutConnection.size())
-        );
+        return cities.get(random.nextInt(cities.size()));
     }
 
     private void addDepotConnections(List<CitiesConnection> connections, City depotCity, Truck truck) {
