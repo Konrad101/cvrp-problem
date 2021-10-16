@@ -2,7 +2,7 @@ package algorithm.evolutionary.mutation;
 
 import algorithm.reparation.Repairer;
 import model.SolvedPath;
-import model.city.CitiesConnection;
+import model.city.connection.CitiesConnection;
 import model.city.City;
 
 import java.util.List;
@@ -19,7 +19,6 @@ public class SwapMutation implements Mutator {
     }
 
     @Override
-    // this method can be void
     public SolvedPath mutation(SolvedPath solution) {
 
         List<CitiesConnection> connections = solution.getConnections();
@@ -27,8 +26,7 @@ public class SwapMutation implements Mutator {
         CitiesConnection secondConnection = extractRandomCitiesConnection(connections);
 
         // to make sure that both cities are different
-        while (firstConnection.equals(secondConnection)
-                || firstConnection.getDestinationPlace().equals(secondConnection.getDestinationPlace())) {
+        while (firstConnection.getDestinationPlace().equals(secondConnection.getDestinationPlace())) {
 
             secondConnection = extractRandomCitiesConnection(connections);
         }
