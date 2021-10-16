@@ -33,14 +33,16 @@ public class GreedyPathResolver implements PathResolverAlgorithm {
         Set<City> citiesWithoutConnection = new HashSet<>(cities);
 
         City originCity = depotCity;
+        truck.load();
         citiesWithoutConnection.remove(originCity);
 
         while (!citiesWithoutConnection.isEmpty()) {
             City destinationCity = getClosestCity(originCity, citiesWithoutConnection);
 
-            if (!isPossibleToUnloadTruckInCity(destinationCity, truck)) {
+            if (isImpossibleToUnloadTruckInCity(destinationCity, truck)) {
                 connections.add(
                         new CitiesConnection(originCity, depotCity));
+                truck.load();
                 originCity = depotCity;
 
                 // find close city without connection from depot city
@@ -49,6 +51,7 @@ public class GreedyPathResolver implements PathResolverAlgorithm {
 
             connections.add(
                     new CitiesConnection(originCity, destinationCity));
+            truck.unload(destinationCity.getDemand());
 
             originCity = destinationCity;
             citiesWithoutConnection.remove(originCity);
@@ -68,7 +71,7 @@ public class GreedyPathResolver implements PathResolverAlgorithm {
                 new CitiesConnection(lastDestinationPlace, depotCity));
     }
 
-    private boolean isPossibleToUnloadTruckInCity(City city, Truck truck) {
+    private boolean isImpossibleToUnloadTruckInCity(City city, Truck truck) {
         return truck.getGoodsAmount() < city.getDemand();
     }
 
