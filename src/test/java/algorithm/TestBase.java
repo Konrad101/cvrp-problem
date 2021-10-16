@@ -27,6 +27,7 @@ public abstract class TestBase {
         assertThatSolvedPath(solvedPath)
                 .doesNotRepeatDeliveryCity()
                 .doesNotRepeatDepotCityAfterDepotCity()
+                .doesNotSkipCities()
                 .isPossibleToRideByTruck(truck)
                 .startsAndEndsWithDepotCity();
     }

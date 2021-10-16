@@ -5,9 +5,11 @@ import model.city.connection.CitiesConnection;
 import model.city.City;
 import model.truck.Truck;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static model.city.connection.CitiesConnectionConverter.convertCitiesListToCitiesConnections;
+import static model.city.connection.CitiesConnectionConverter.convertConnectionsToOrderedCityList;
 
 public class BasicRepairer implements Repairer {
 
@@ -23,42 +25,19 @@ public class BasicRepairer implements Repairer {
     public SolvedPath repairPath(SolvedPath path) {
         List<CitiesConnection> connections = path.getConnections();
 
-        List<CitiesConnection> repairedPath = getConnectionsWithoutDepotConnections(connections);
-        addDepotConnections(repairedPath);
+        List<City> deliveryCities = extractDeliveryCities(connections);
 
-        return new SolvedPath(repairedPath);
+        List<CitiesConnection> pathConnections = convertCitiesListToCitiesConnections(deliveryCities);
+        addDepotConnections(pathConnections);
+
+        return new SolvedPath(pathConnections);
     }
 
-    private List<CitiesConnection> getConnectionsWithoutDepotConnections(List<CitiesConnection> connections) {
-        List<CitiesConnection> connectionsWithoutDepots = connections.stream()
-                .filter(connection -> connection.getOriginPlace().isDeliveryCity() &&
-                        connection.getDestinationPlace().isDeliveryCity())
-                .collect(Collectors.toList());
-
-        return addMissingConnections(connectionsWithoutDepots);
-    }
-
-    // adds connection when previous destination city is not equal to next origin city
-    private List<CitiesConnection> addMissingConnections(List<CitiesConnection> connections) {
-        List<CitiesConnection> repairedConnections = new ArrayList<>();
-
-        CitiesConnection nextConnection = null;
-        for (int i = 0; i < connections.size() - 1; i++) {
-            CitiesConnection currentConnection = connections.get(i);
-            nextConnection = connections.get(i + 1);
-
-            repairedConnections.add(currentConnection);
-            City currentDestinationPlace = currentConnection.getDestinationPlace();
-            City nextOriginPlace = nextConnection.getOriginPlace();
-
-            if(!currentDestinationPlace.equals(nextOriginPlace)) {
-                repairedConnections.add(
-                        new CitiesConnection(currentDestinationPlace, nextOriginPlace));
-            }
-        }
-        repairedConnections.add(nextConnection);
-
-        return repairedConnections;
+    private List<City> extractDeliveryCities(List<CitiesConnection> connections) {
+        List<City> cities = convertConnectionsToOrderedCityList(connections);
+        return cities.stream()
+                .filter(City::isDeliveryCity)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private void addDepotConnections(List<CitiesConnection> connections) {

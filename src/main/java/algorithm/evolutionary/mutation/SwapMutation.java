@@ -1,16 +1,19 @@
 package algorithm.evolutionary.mutation;
 
+import algorithm.evolutionary.index.RandomIndexesProvider;
 import algorithm.reparation.Repairer;
 import model.SolvedPath;
 import model.city.connection.CitiesConnection;
 import model.city.City;
 
 import java.util.List;
-import java.util.Random;
+
+import static algorithm.evolutionary.index.RandomIndexesProvider.randomIndexRangeOf;
+import static java.util.Collections.swap;
+import static model.city.connection.CitiesConnectionConverter.convertCitiesListToCitiesConnections;
+import static model.city.connection.CitiesConnectionConverter.convertConnectionsToOrderedCityList;
 
 public class SwapMutation implements Mutator {
-
-    private static final Random random = new Random();
 
     private final Repairer repairer;
 
@@ -22,28 +25,18 @@ public class SwapMutation implements Mutator {
     public SolvedPath mutation(SolvedPath solution) {
 
         List<CitiesConnection> connections = solution.getConnections();
-        CitiesConnection firstConnection = extractRandomCitiesConnection(connections);
-        CitiesConnection secondConnection = extractRandomCitiesConnection(connections);
+        List<City> cities = convertConnectionsToOrderedCityList(connections);
 
-        // to make sure that both cities are different
-        while (firstConnection.getDestinationPlace().equals(secondConnection.getDestinationPlace())) {
+        swapTwoRandomCities(cities);
 
-            secondConnection = extractRandomCitiesConnection(connections);
-        }
+        connections = convertCitiesListToCitiesConnections(cities);
 
-        swapDestinationCities(firstConnection, secondConnection);
-
-        return repairer.repairPath(solution);
+        return repairer.repairPath(new SolvedPath(connections));
     }
 
-    private CitiesConnection extractRandomCitiesConnection(List<CitiesConnection> connections) {
-        return connections.get(random.nextInt(connections.size()));
-    }
+    private void swapTwoRandomCities(List<City> cities) {
+        RandomIndexesProvider randomIndexesProvider = randomIndexRangeOf(cities.size());
 
-    private void swapDestinationCities(CitiesConnection firstConnection, CitiesConnection secondConnection) {
-        City firstDestinationPlace = firstConnection.getDestinationPlace();
-
-        firstConnection.setDestinationPlace(secondConnection.getDestinationPlace());
-        secondConnection.setDestinationPlace(firstDestinationPlace);
+        swap(cities,  randomIndexesProvider.indexFrom(), randomIndexesProvider.indexTo());
     }
 }

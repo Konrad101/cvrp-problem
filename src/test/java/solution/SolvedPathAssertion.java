@@ -1,13 +1,18 @@
 package solution;
 
 import model.SolvedPath;
-import model.city.connection.CitiesConnection;
 import model.city.City;
+import model.city.connection.CitiesConnection;
 import model.truck.Truck;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, SolvedPath> {
 
@@ -32,6 +37,29 @@ public class SolvedPathAssertion extends AbstractAssert<SolvedPathAssertion, Sol
 
         resolveLoadingForCity(truck, connections.get(connections.size() - 1)
                 .getDestinationPlace());
+
+        return this;
+    }
+
+    public SolvedPathAssertion doesNotSkipCities() {
+        isNotNull();
+
+        List<CitiesConnection> connections = actual.getConnections();
+
+        List<Integer> citiesNumbers = connections.stream()
+                .map(connection -> connection.getOriginPlace().getNumber())
+                .collect(Collectors.toUnmodifiableList());
+
+        OptionalInt maxCityNumber = citiesNumbers.stream()
+                .mapToInt(Integer::intValue)
+                .max();
+
+        maxCityNumber.ifPresent(
+                maxNumber ->
+                        IntStream.range(1, maxNumber)
+                                .forEachOrdered(number ->
+                                        Assertions.assertThat(citiesNumbers).contains(number))
+        );
 
         return this;
     }
