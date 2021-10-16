@@ -1,12 +1,12 @@
 package algorithm.random;
 
 import algorithm.PathResolverAlgorithm;
+import algorithm.reparation.Repairer;
 import model.CvrpData;
 import model.SolvedPath;
-import model.city.CitiesConnection;
+import model.city.connection.CitiesConnection;
 import model.city.City;
 import model.city.DeliveryCitiesMap;
-import model.truck.Truck;
 
 import java.util.*;
 
@@ -14,16 +14,18 @@ public class RandomPathResolver implements PathResolverAlgorithm {
 
     private static final Random random = new Random();
 
+    private final Repairer repairer;
+
+    public RandomPathResolver(Repairer repairer) {
+        this.repairer = repairer;
+    }
+
     @Override
     public SolvedPath findOptimalPath(CvrpData cvrpData) {
         DeliveryCitiesMap deliveryCitiesMap = cvrpData.getDeliveryCitiesMap();
         List<CitiesConnection> citiesConnection = findCitiesConnections(deliveryCitiesMap);
 
-        Truck truck = cvrpData.getTruck();
-        City depotCity = cvrpData.getDepotCity();
-        addDepotConnections(citiesConnection, depotCity, truck);
-
-        return new SolvedPath(citiesConnection);
+        return repairer.repairPath(new SolvedPath(citiesConnection));
     }
 
     private List<CitiesConnection> findCitiesConnections(DeliveryCitiesMap deliveryCitiesMap) {
@@ -54,35 +56,6 @@ public class RandomPathResolver implements PathResolverAlgorithm {
                 new ArrayList<>(citiesWithoutConnection);
 
         return cities.get(random.nextInt(cities.size()));
-    }
-
-    private void addDepotConnections(List<CitiesConnection> connections, City depotCity, Truck truck) {
-        connections.add(0,
-                new CitiesConnection(
-                        depotCity,
-                        connections.get(0).getOriginPlace()));
-        connections.add(connections.size(),
-                new CitiesConnection(
-                        connections.get(connections.size() - 1).getDestinationPlace(),
-                        depotCity));
-        truck.load();
-
-        for (int i = 0; i < connections.size(); i++) {
-            City connectionOriginPlace = connections.get(i).getOriginPlace();
-            int demand = connectionOriginPlace.getDemand();
-
-            // add additional connection to depot city
-            if (truck.getGoodsAmount() < demand) {
-                CitiesConnection previousConnection = connections.get(i - 1);
-                previousConnection.setDestinationPlace(depotCity);
-                truck.load();
-
-                connections.add(i, new CitiesConnection(depotCity, connectionOriginPlace));
-                i++;
-            }
-
-            truck.unload(demand);
-        }
     }
 
 }

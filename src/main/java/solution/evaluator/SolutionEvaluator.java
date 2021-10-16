@@ -1,7 +1,7 @@
 package solution.evaluator;
 
 import model.SolvedPath;
-import model.city.CitiesConnection;
+import model.city.connection.CitiesConnection;
 import model.city.CityDistanceCalculator;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package solution;
 
 import model.SolvedPath;
-import model.city.CitiesConnection;
+import model.city.connection.CitiesConnection;
 import model.city.City;
 import model.truck.Truck;
 import org.assertj.core.api.AbstractAssert;

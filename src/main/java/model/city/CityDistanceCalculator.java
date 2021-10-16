@@ -1,5 +1,7 @@
 package model.city;
 
+import model.city.connection.CitiesConnection;
+
 import java.awt.geom.Point2D;
 
 public class CityDistanceCalculator {

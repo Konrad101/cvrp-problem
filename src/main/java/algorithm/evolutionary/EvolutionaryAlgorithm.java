@@ -5,6 +5,7 @@ import algorithm.evolutionary.crossover.CrossoverAlgorithm;
 import algorithm.evolutionary.mutation.Mutator;
 import algorithm.evolutionary.selection.SelectionAlgorithm;
 import algorithm.random.RandomPathResolver;
+import algorithm.reparation.Repairer;
 import model.CvrpData;
 import model.SolvedPath;
 
@@ -28,13 +29,16 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
     private final SelectionAlgorithm selectionAlgorithm;
     private final CrossoverAlgorithm crossoverAlgorithm;
     private final Mutator mutator;
+    private final Repairer repairer;
 
     public EvolutionaryAlgorithm(SelectionAlgorithm selectionAlgorithm,
                                  CrossoverAlgorithm crossoverAlgorithm,
-                                 Mutator mutator) {
+                                 Mutator mutator,
+                                 Repairer repairer) {
         this.selectionAlgorithm = selectionAlgorithm;
         this.crossoverAlgorithm = crossoverAlgorithm;
         this.mutator = mutator;
+        this.repairer = repairer;
 
         results = new ArrayList<>();
     }
@@ -119,7 +123,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
 
     private List<SolvedPath> generateRandomPopulation(CvrpData data) {
         List<SolvedPath> population = new ArrayList<>(POPULATION_SIZE);
-        PathResolverAlgorithm pathResolver = new RandomPathResolver();
+        PathResolverAlgorithm pathResolver = new RandomPathResolver(repairer);
 
         for (int i = 0; i < POPULATION_SIZE; i++) {
             population.add(pathResolver.findOptimalPath(data));

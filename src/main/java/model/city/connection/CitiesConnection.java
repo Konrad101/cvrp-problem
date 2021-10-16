@@ -1,4 +1,6 @@
-package model.city;
+package model.city.connection;
+
+import model.city.City;
 
 import java.util.Objects;
 

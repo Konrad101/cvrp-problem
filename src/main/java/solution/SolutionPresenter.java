@@ -2,7 +2,7 @@ package solution;
 
 import model.CvrpData;
 import model.SolvedPath;
-import model.city.CitiesConnection;
+import model.city.connection.CitiesConnection;
 import model.city.City;
 import model.truck.Truck;
 

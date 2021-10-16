@@ -3,7 +3,7 @@ package algorithm.greedy;
 import algorithm.PathResolverAlgorithm;
 import model.CvrpData;
 import model.SolvedPath;
-import model.city.CitiesConnection;
+import model.city.connection.CitiesConnection;
 import model.city.City;
 import model.city.DeliveryCitiesMap;
 import model.truck.Truck;

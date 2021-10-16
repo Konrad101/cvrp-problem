@@ -1,6 +1,6 @@
 package model;
 
-import model.city.CitiesConnection;
+import model.city.connection.CitiesConnection;
 
 import java.util.List;
 
