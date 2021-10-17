@@ -3,6 +3,7 @@ package algorithm.evolutionary;
 import algorithm.TestBase;
 import algorithm.evolutionary.crossover.CrossoverAlgorithm;
 import algorithm.evolutionary.crossover.OrderedCrossover;
+import algorithm.evolutionary.crossover.PartiallyMatchedCrossover;
 import algorithm.evolutionary.mutation.InvertMutation;
 import algorithm.evolutionary.mutation.Mutator;
 import algorithm.evolutionary.mutation.SwapMutation;
@@ -87,6 +88,28 @@ class EvolutionaryAlgorithmTest extends TestBase {
         setUpEvolutionaryAlgorithm(
                 new TournamentSelection(),
                 new OrderedCrossover(repairer),
+                new InvertMutation(repairer),
+                repairer
+        );
+
+        // when
+        SolvedPath optimalPath = pathResolver.findOptimalPath(cvrpData);
+
+        // then
+        assertThatSolvedPathIsValid(optimalPath, truck);
+    }
+
+    @Test
+    void solvedPathIsValidForBasicProblemUsingPartiallyMatchedCrossover() {
+        // given
+        CvrpData cvrpData = fileRepository.getCvrpData(BASIC_PROBLEM_FILE_PATH);
+        Truck truck = cvrpData.getTruck();
+
+        Repairer repairer = getRepairer(cvrpData);
+
+        setUpEvolutionaryAlgorithm(
+                new TournamentSelection(),
+                new PartiallyMatchedCrossover(repairer),
                 new InvertMutation(repairer),
                 repairer
         );

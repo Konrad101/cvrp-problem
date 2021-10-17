@@ -4,6 +4,7 @@ import algorithm.PathResolverAlgorithm;
 import algorithm.evolutionary.EvolutionaryAlgorithm;
 import algorithm.evolutionary.crossover.CrossoverAlgorithm;
 import algorithm.evolutionary.crossover.OrderedCrossover;
+import algorithm.evolutionary.crossover.PartiallyMatchedCrossover;
 import algorithm.evolutionary.mutation.Mutator;
 import algorithm.evolutionary.mutation.SwapMutation;
 import algorithm.evolutionary.selection.SelectionAlgorithm;
@@ -30,7 +31,7 @@ public class Main {
 
         Repairer repairer = new BasicRepairer(cvrpData.getDepotCity(), cvrpData.getTruck());
         SelectionAlgorithm selectionAlgorithm = new TournamentSelection();
-        CrossoverAlgorithm crossoverAlgorithm = new OrderedCrossover(repairer);
+        CrossoverAlgorithm crossoverAlgorithm = new PartiallyMatchedCrossover(repairer);
         Mutator mutator = new SwapMutation(repairer);
 
         PathResolverAlgorithm resolver = evolutionaryAlgorithm(

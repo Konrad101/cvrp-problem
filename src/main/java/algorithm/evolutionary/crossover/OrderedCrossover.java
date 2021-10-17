@@ -34,10 +34,10 @@ public class OrderedCrossover implements CrossoverAlgorithm {
         List<City> firstParentCities = convertConnectionsToOrderedCityList(firstParentConnections);
         List<City> secondParentCities = convertConnectionsToOrderedCityList(secondParentConnections);
 
-        List<City> combinedCities = combineParentCities(firstParentCities, secondParentCities);
-        List<CitiesConnection> combinedConnections = convertCitiesListToCitiesConnections(combinedCities);
+        List<City> childCities = combineParentCities(firstParentCities, secondParentCities);
+        List<CitiesConnection> childConnections = convertCitiesListToCitiesConnections(childCities);
 
-        return repairer.repairPath(new SolvedPath(combinedConnections));
+        return repairer.repairPath(new SolvedPath(childConnections));
     }
 
     private List<City> combineParentCities(List<City> firstParentCities, List<City> secondParentCities) {
@@ -52,11 +52,25 @@ public class OrderedCrossover implements CrossoverAlgorithm {
                 .filter(city -> !firstParentCitiesSublist.contains(city) && city.isDeliveryCity())
                 .collect(Collectors.toUnmodifiableList());
 
-        if (missingCities.isEmpty()){
+        if (missingCities.isEmpty()) {
             return firstParentCitiesSublist;
         }
 
-        List<City> childCities = new ArrayList<>(firstParentCitiesSublist);
+        return concatMissingCities(
+                new ArrayList<>(firstParentCitiesSublist),
+                missingCities,
+                firstParentIndexFrom,
+                firstParentIndexTo,
+                firstParentCities.size() - 1);
+    }
+
+    private List<City> concatMissingCities(
+            List<City> childCities,
+            List<City> missingCities,
+            int firstParentIndexFrom,
+            int firstParentIndexTo,
+            int firstParentCitiesLastIndex) {
+
         if (firstParentIndexFrom > 0) {
 
             int missingFirstPartBound = min(missingCities.size(), firstParentIndexFrom);
@@ -71,11 +85,11 @@ public class OrderedCrossover implements CrossoverAlgorithm {
                     .collect(Collectors.toUnmodifiableList());
         }
 
-        if (firstParentIndexTo < firstParentCities.size() - 1) {
+        if (firstParentIndexTo < firstParentCitiesLastIndex) {
             childCities = concat(
                     childCities.stream(),
                     missingCities.stream()
-                    ).collect(Collectors.toUnmodifiableList());
+            ).collect(Collectors.toUnmodifiableList());
         }
 
         return childCities;

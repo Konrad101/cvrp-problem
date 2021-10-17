@@ -10,13 +10,16 @@ import static solution.evaluator.SolutionEvaluator.evaluate;
 
 public class TournamentSelection implements SelectionAlgorithm {
 
-    private static final double TOURNAMENT_SIZE = 0.07;
+    private static final double TOURNAMENT_SIZE = 5;
     private static final Random random = new Random();
 
 
     @Override
     public SolvedPath selectFromPopulation(List<SolvedPath> population) {
-        int solutionsAmount = (int) (TOURNAMENT_SIZE * population.size());
+        int solutionsAmount = (int) (TOURNAMENT_SIZE < 1 ?
+                TOURNAMENT_SIZE * population.size() :
+                TOURNAMENT_SIZE
+        );
         int startIndex = random.nextInt(population.size() - solutionsAmount);
 
         List<SolvedPath> selectedSolutions = population.subList(startIndex, startIndex + solutionsAmount);
