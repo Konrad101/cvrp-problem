@@ -2,11 +2,9 @@ package algorithm;
 
 import file.repository.CvrpFileDataRepository;
 import file.repository.FileRepository;
-import model.CvrpData;
 import model.SolvedPath;
 import model.truck.Truck;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static solution.SolvedPathAssertion.assertThatSolvedPath;
 

@@ -23,6 +23,7 @@ import solution.SolutionProviderService;
 public class Main {
 
     private static final String CVRP_PROBLEM_FILE_PATH = "src\\main\\resources\\dataset\\basic\\A-n32-k5.vrp";
+    private static final String RESULTS_PATH = "results\\EA_results.csv";
 
     public static void main(String[] args) {
         FileRepository repository = new CvrpFileDataRepository();
@@ -31,7 +32,7 @@ public class Main {
 
         Repairer repairer = new BasicRepairer(cvrpData.getDepotCity(), cvrpData.getTruck());
         SelectionAlgorithm selectionAlgorithm = new TournamentSelection();
-        CrossoverAlgorithm crossoverAlgorithm = new PartiallyMatchedCrossover(repairer);
+        CrossoverAlgorithm crossoverAlgorithm = new OrderedCrossover(repairer);
         Mutator mutator = new SwapMutation(repairer);
 
         PathResolverAlgorithm resolver = evolutionaryAlgorithm(
@@ -46,6 +47,11 @@ public class Main {
         SolutionPresenter solutionPresenter = new SolutionPresenter(solution, cvrpData);
         solutionPresenter.printSolution();
         solutionPresenter.printEvaluation();
+
+        if (resolver instanceof EvolutionaryAlgorithm) {
+            EvolutionaryAlgorithm evolutionaryAlgorithm = (EvolutionaryAlgorithm) resolver;
+            repository.saveEvolutionaryAlgorithmResult(RESULTS_PATH, evolutionaryAlgorithm.getResults());
+        }
     }
 
     public static RandomPathResolver randomPathResolver(Repairer repairer) {

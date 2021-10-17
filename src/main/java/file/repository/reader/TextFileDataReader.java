@@ -1,4 +1,4 @@
-package file.repository;
+package file.repository.reader;
 
 
 import org.slf4j.Logger;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-class TextFileDataReader {
+public class TextFileDataReader {
 
     private static final Logger log = LoggerFactory.getLogger(TextFileDataReader.class);
 

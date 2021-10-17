@@ -2,14 +2,24 @@ package algorithm.evolutionary;
 
 public class PopulationResult {
 
+    private final int populationNumber;
     private final double bestElementValue;
-    private final double worstElementValue;
     private final double averageElementValue;
+    private final double worstElementValue;
 
-    public PopulationResult(double bestElementValue, double worstElementValue, double averageElementValue) {
+    public PopulationResult(
+            int populationNumber,
+            double bestElementValue,
+            double worstElementValue,
+            double averageElementValue) {
+        this.populationNumber = populationNumber;
         this.bestElementValue = bestElementValue;
         this.worstElementValue = worstElementValue;
         this.averageElementValue = averageElementValue;
+    }
+
+    public int getPopulationNumber() {
+        return populationNumber;
     }
 
     public double getBestElementValue() {

@@ -1,6 +1,5 @@
-package file.repository;
+package file.repository.reader;
 
-import file.DataPrefix;
 import file.error.InvalidSingleLineValueExtractionError;
 import file.error.WrongFileDataException;
 import model.CvrpData;
@@ -10,7 +9,7 @@ import model.city.City;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static file.DataPrefix.*;
+import static file.repository.reader.DataPrefix.*;
 import static java.util.stream.IntStream.range;
 
 public class CvrpFileDataMapper {

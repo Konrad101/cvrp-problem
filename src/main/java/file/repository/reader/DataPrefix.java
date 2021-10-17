@@ -1,4 +1,4 @@
-package file;
+package file.repository.reader;
 
 public enum DataPrefix {
 

@@ -1,6 +1,6 @@
 package file.error;
 
-import file.DataPrefix;
+import file.repository.reader.DataPrefix;
 
 public class WrongFileDataException extends RuntimeException {
 

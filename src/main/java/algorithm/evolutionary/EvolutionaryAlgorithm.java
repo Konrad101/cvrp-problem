@@ -63,7 +63,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
         }
 
         int populationNumber = 0;
-        while (populationNumber <= GENERATIONS_AMOUNT) {
+        while (populationNumber < GENERATIONS_AMOUNT) {
             List<SolvedPath> newPopulation = new ArrayList<>(POPULATION_SIZE);
             List<Double> newPopulationEvaluations = new ArrayList<>(POPULATION_SIZE);
 
@@ -83,7 +83,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
 
             ++populationNumber;
             population = newPopulation;
-            results.add(extractResultFromEvaluations(newPopulationEvaluations));
+            results.add(extractResultFromEvaluations(newPopulationEvaluations, populationNumber));
         }
 
         return bestSolution;
@@ -104,7 +104,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
         return child;
     }
 
-    private PopulationResult extractResultFromEvaluations(List<Double> evaluations) {
+    private PopulationResult extractResultFromEvaluations(List<Double> evaluations, int populationNumber) {
         double best = evaluations.get(0);
         double worst = evaluations.get(0);
         double sumOfEvaluations = 0;
@@ -118,7 +118,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
 
         double average = sumOfEvaluations / evaluations.size();
 
-        return new PopulationResult(best, worst, average);
+        return new PopulationResult(populationNumber, best, worst, average);
     }
 
     private List<SolvedPath> generateRandomPopulation(CvrpData data) {
