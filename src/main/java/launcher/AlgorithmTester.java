@@ -32,7 +32,8 @@ public class AlgorithmTester {
 
     private static final String EA_RESULTS_PATH = "results\\EA_results.csv";
 
-    private static final int ALGORITHM_ITERATIONS = 10;
+    private static final int EA_ALGORITHM_ITERATIONS = 10;
+    private static final int RANDOM_ALGORITHM_ITERATIONS = 10000;
 
     private final FileRepository repository;
 
@@ -41,7 +42,7 @@ public class AlgorithmTester {
     }
 
     public void runEvolutionaryAlgorithm(CvrpData cvrpData) {
-        System.out.println("EVOLUTIONARY");
+        System.out.println("\nEVOLUTIONARY");
 
         Repairer repairer = getRepairerForCvrpData(cvrpData);
         SelectionAlgorithm selectionAlgorithm = new TournamentSelection();
@@ -49,7 +50,7 @@ public class AlgorithmTester {
         Mutator mutator = new SwapMutation(repairer);
 
         List<List<PopulationResult>> resultsFromAllIterations = new ArrayList<>();
-        for (int i = 0; i < ALGORITHM_ITERATIONS; i++) {
+        for (int i = 0; i < EA_ALGORITHM_ITERATIONS; i++) {
             EvolutionaryAlgorithm resolver = new EvolutionaryAlgorithm(
                     selectionAlgorithm,
                     crossoverAlgorithm,
@@ -66,12 +67,12 @@ public class AlgorithmTester {
     }
 
     public void runRandomAlgorithm(CvrpData cvrpData) {
-        System.out.println("RANDOM");
+        System.out.println("\nRANDOM");
         Repairer repairer = getRepairerForCvrpData(cvrpData);
         RandomPathResolver resolver = new RandomPathResolver(repairer);
 
         List<Double> algorithmEvaluations = new ArrayList<>();
-        for (int i = 0; i < ALGORITHM_ITERATIONS; i++) {
+        for (int i = 0; i < RANDOM_ALGORITHM_ITERATIONS; i++) {
             SolvedPath solution = runAlgorithm(resolver, cvrpData);
             algorithmEvaluations.add(evaluate(solution));
         }
@@ -81,7 +82,7 @@ public class AlgorithmTester {
     }
 
     public void runGreedyAlgorithm(CvrpData cvrpData) {
-        System.out.println("GREEDY");
+        System.out.println("\nGREEDY");
 
         GreedyPathResolver resolver = new GreedyPathResolver();
         SolvedPath optimalPath = resolver.findOptimalPath(cvrpData);
@@ -93,20 +94,20 @@ public class AlgorithmTester {
     private void printResultForEvolutionary(List<PopulationResult> results) {
         PopulationResult firstResult = results.get(0);
         double best = firstResult.getBestElementValue();
-        double worst= firstResult.getWorstElementValue();
+        double worst = firstResult.getWorstElementValue();
         double sumOfAverages = 0;
 
         List<Double> averageNumbers = new ArrayList<>();
-        for(PopulationResult result : results) {
+        for (PopulationResult result : results) {
             double avgValue = result.getAverageElementValue();
             averageNumbers.add(avgValue);
             sumOfAverages += avgValue;
 
             double worstElementValue = result.getWorstElementValue();
-            if(worstElementValue > worst) worst = worstElementValue;
+            if (worstElementValue > worst) worst = worstElementValue;
 
             double bestElementValue = result.getBestElementValue();
-            if(bestElementValue < best) best = bestElementValue;
+            if (bestElementValue < best) best = bestElementValue;
         }
 
         double average = sumOfAverages / results.size();
@@ -137,8 +138,11 @@ public class AlgorithmTester {
 
         results.forEach(
                 oneIterationResults -> oneIterationResults
-                        .forEach(result ->
-                                sumOfBestsForEachPopulation.put(result.getPopulationNumber(), 0.)));
+                        .forEach(result -> {
+                            sumOfBestsForEachPopulation.put(result.getPopulationNumber(), 0.);
+                            sumOfWorstsForEachPopulation.put(result.getPopulationNumber(), 0.);
+                            sumOfAveragesForEachPopulation.put(result.getPopulationNumber(), 0.);
+                        }));
 
         results.forEach(
                 oneIterationResults -> oneIterationResults.forEach(result -> {
@@ -161,9 +165,9 @@ public class AlgorithmTester {
             Double sumOfWorstsForCurrentPopulation = sumOfWorstsForEachPopulation.get(populationNumber);
             Double sumOfAveragesForCurrentPopulation = sumOfAveragesForEachPopulation.get(populationNumber);
 
-            double averageBest = sumOfBestsForCurrentPopulation / ALGORITHM_ITERATIONS;
-            double averageWorst = sumOfWorstsForCurrentPopulation / ALGORITHM_ITERATIONS;
-            double averageFromAverages = sumOfAveragesForCurrentPopulation / ALGORITHM_ITERATIONS;
+            double averageBest = sumOfBestsForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
+            double averageWorst = sumOfWorstsForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
+            double averageFromAverages = sumOfAveragesForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
 
             populationResults.add(new PopulationResult(
                     populationNumber,
@@ -175,8 +179,6 @@ public class AlgorithmTester {
 
         return populationResults;
     }
-
-
 
     private Repairer getRepairerForCvrpData(CvrpData cvrpData) {
         return new BasicRepairer(cvrpData.getDepotCity(), cvrpData.getTruck());
