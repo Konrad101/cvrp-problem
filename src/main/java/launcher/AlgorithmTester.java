@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static algorithm.result.AlgorithmResult.calculateStandardDeviation;
 import static algorithm.result.AlgorithmResult.extractResultFromEvaluations;
@@ -132,46 +133,44 @@ public class AlgorithmTester {
 
     private List<PopulationResult> createResultFromAllIterationPopulationResults(List<List<PopulationResult>> results) {
         // key is population number
-        Map<Integer, Double> sumOfBestsForEachPopulation = new HashMap<>();
         Map<Integer, Double> sumOfAveragesForEachPopulation = new HashMap<>();
         Map<Integer, Double> sumOfWorstsForEachPopulation = new HashMap<>();
 
         results.forEach(
                 oneIterationResults -> oneIterationResults
                         .forEach(result -> {
-                            sumOfBestsForEachPopulation.put(result.getPopulationNumber(), 0.);
                             sumOfWorstsForEachPopulation.put(result.getPopulationNumber(), 0.);
                             sumOfAveragesForEachPopulation.put(result.getPopulationNumber(), 0.);
                         }));
 
+        AtomicReference<Double> best = new AtomicReference<>(Double.MAX_VALUE);
         results.forEach(
                 oneIterationResults -> oneIterationResults.forEach(result -> {
                     int populationNumber = result.getPopulationNumber();
 
-                    Double sumOfBests = sumOfBestsForEachPopulation.get(populationNumber);
                     Double sumOfWorsts = sumOfWorstsForEachPopulation.get(populationNumber);
                     Double sumOfAverages = sumOfAveragesForEachPopulation.get(populationNumber);
 
-                    sumOfBestsForEachPopulation.put(populationNumber, sumOfBests + result.getBestElementValue());
                     sumOfWorstsForEachPopulation.put(populationNumber, sumOfWorsts + result.getWorstElementValue());
                     sumOfAveragesForEachPopulation.put(populationNumber, sumOfAverages + result.getAverageElementValue());
+
+                    double bestElementValue = result.getBestElementValue();
+                    if(best.get() > bestElementValue) best.set(bestElementValue);
                 }));
 
-        int populationsAmount = sumOfBestsForEachPopulation.size();
+        int populationsAmount = sumOfWorstsForEachPopulation.size();
 
         List<PopulationResult> populationResults = new ArrayList<>();
         for (int populationNumber = 1; populationNumber <= populationsAmount; populationNumber++) {
-            Double sumOfBestsForCurrentPopulation = sumOfBestsForEachPopulation.get(populationNumber);
             Double sumOfWorstsForCurrentPopulation = sumOfWorstsForEachPopulation.get(populationNumber);
             Double sumOfAveragesForCurrentPopulation = sumOfAveragesForEachPopulation.get(populationNumber);
 
-            double averageBest = sumOfBestsForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
             double averageWorst = sumOfWorstsForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
             double averageFromAverages = sumOfAveragesForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
 
             populationResults.add(new PopulationResult(
                     populationNumber,
-                    averageBest,
+                    best.get(),
                     averageWorst,
                     averageFromAverages
             ));
