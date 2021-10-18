@@ -6,6 +6,7 @@ import algorithm.evolutionary.mutation.Mutator;
 import algorithm.evolutionary.selection.SelectionAlgorithm;
 import algorithm.random.RandomPathResolver;
 import algorithm.reparation.Repairer;
+import algorithm.result.AlgorithmResult;
 import model.CvrpData;
 import model.SolvedPath;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static algorithm.result.AlgorithmResult.extractResultFromEvaluations;
 import static solution.evaluator.SolutionEvaluator.evaluate;
 
 public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
@@ -83,7 +85,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
 
             ++populationNumber;
             population = newPopulation;
-            results.add(extractResultFromEvaluations(newPopulationEvaluations, populationNumber));
+            results.add(extractPopulationResultFromEvaluations(newPopulationEvaluations, populationNumber));
         }
 
         return bestSolution;
@@ -104,19 +106,12 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
         return child;
     }
 
-    private PopulationResult extractResultFromEvaluations(List<Double> evaluations, int populationNumber) {
-        double best = evaluations.get(0);
-        double worst = evaluations.get(0);
-        double sumOfEvaluations = 0;
+    private PopulationResult extractPopulationResultFromEvaluations(List<Double> evaluations, int populationNumber) {
+        AlgorithmResult algorithmResult = extractResultFromEvaluations(evaluations);
 
-        for (Double evaluation : evaluations) {
-            sumOfEvaluations += evaluation;
-
-            if (best > evaluation) best = evaluation;
-            if (worst < evaluation) worst = evaluation;
-        }
-
-        double average = sumOfEvaluations / evaluations.size();
+        double best = algorithmResult.getBestElementValue();
+        double worst = algorithmResult.getWorstElementValue();
+        double average = algorithmResult.getAverageElementValue();
 
         return new PopulationResult(populationNumber, best, worst, average);
     }
