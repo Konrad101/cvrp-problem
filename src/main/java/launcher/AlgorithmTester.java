@@ -2,11 +2,11 @@ package launcher;
 
 import algorithm.PathResolverAlgorithm;
 import algorithm.evolutionary.EvolutionaryAlgorithm;
-import algorithm.evolutionary.PopulationResult;
+import algorithm.result.PopulationResult;
 import algorithm.evolutionary.crossover.CrossoverAlgorithm;
 import algorithm.evolutionary.crossover.OrderedCrossover;
+import algorithm.evolutionary.mutation.InvertMutation;
 import algorithm.evolutionary.mutation.Mutator;
-import algorithm.evolutionary.mutation.SwapMutation;
 import algorithm.evolutionary.selection.SelectionAlgorithm;
 import algorithm.evolutionary.selection.TournamentSelection;
 import algorithm.greedy.GreedyPathResolver;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static algorithm.result.AlgorithmResult.calculateStandardDeviation;
 import static algorithm.result.AlgorithmResult.extractResultFromEvaluations;
@@ -34,7 +33,7 @@ public class AlgorithmTester {
     private static final String EA_RESULTS_PATH = "results\\EA_results.csv";
 
     private static final int EA_ALGORITHM_ITERATIONS = 10;
-    private static final int RANDOM_ALGORITHM_ITERATIONS = 10000;
+    private static final int RANDOM_ALGORITHM_ITERATIONS = 100;
 
     private final FileRepository repository;
 
@@ -48,7 +47,7 @@ public class AlgorithmTester {
         Repairer repairer = getRepairerForCvrpData(cvrpData);
         SelectionAlgorithm selectionAlgorithm = new TournamentSelection();
         CrossoverAlgorithm crossoverAlgorithm = new OrderedCrossover(repairer);
-        Mutator mutator = new SwapMutation(repairer);
+        Mutator mutator = new InvertMutation(repairer);
 
         List<List<PopulationResult>> resultsFromAllIterations = new ArrayList<>();
         for (int i = 0; i < EA_ALGORITHM_ITERATIONS; i++) {
@@ -133,44 +132,47 @@ public class AlgorithmTester {
 
     private List<PopulationResult> createResultFromAllIterationPopulationResults(List<List<PopulationResult>> results) {
         // key is population number
+        Map<Integer, Double> sumOfBestsForEachPopulation = new HashMap<>();
         Map<Integer, Double> sumOfAveragesForEachPopulation = new HashMap<>();
         Map<Integer, Double> sumOfWorstsForEachPopulation = new HashMap<>();
 
         results.forEach(
                 oneIterationResults -> oneIterationResults
                         .forEach(result -> {
+                            sumOfBestsForEachPopulation.put(result.getPopulationNumber(), 0.);
                             sumOfWorstsForEachPopulation.put(result.getPopulationNumber(), 0.);
                             sumOfAveragesForEachPopulation.put(result.getPopulationNumber(), 0.);
                         }));
 
-        AtomicReference<Double> best = new AtomicReference<>(Double.MAX_VALUE);
         results.forEach(
                 oneIterationResults -> oneIterationResults.forEach(result -> {
                     int populationNumber = result.getPopulationNumber();
 
+                    Double sumOfBests = sumOfBestsForEachPopulation.get(populationNumber);
                     Double sumOfWorsts = sumOfWorstsForEachPopulation.get(populationNumber);
                     Double sumOfAverages = sumOfAveragesForEachPopulation.get(populationNumber);
 
+                    sumOfBestsForEachPopulation.put(populationNumber, sumOfBests + result.getBestElementValue());
                     sumOfWorstsForEachPopulation.put(populationNumber, sumOfWorsts + result.getWorstElementValue());
                     sumOfAveragesForEachPopulation.put(populationNumber, sumOfAverages + result.getAverageElementValue());
 
-                    double bestElementValue = result.getBestElementValue();
-                    if(best.get() > bestElementValue) best.set(bestElementValue);
                 }));
 
         int populationsAmount = sumOfWorstsForEachPopulation.size();
 
         List<PopulationResult> populationResults = new ArrayList<>();
         for (int populationNumber = 1; populationNumber <= populationsAmount; populationNumber++) {
+            Double sumOfBestsForCurrentPopulation = sumOfBestsForEachPopulation.get(populationNumber);
             Double sumOfWorstsForCurrentPopulation = sumOfWorstsForEachPopulation.get(populationNumber);
             Double sumOfAveragesForCurrentPopulation = sumOfAveragesForEachPopulation.get(populationNumber);
 
+            double averageBest = sumOfBestsForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
             double averageWorst = sumOfWorstsForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
             double averageFromAverages = sumOfAveragesForCurrentPopulation / EA_ALGORITHM_ITERATIONS;
 
             populationResults.add(new PopulationResult(
                     populationNumber,
-                    best.get(),
+                    averageBest,
                     averageWorst,
                     averageFromAverages
             ));
