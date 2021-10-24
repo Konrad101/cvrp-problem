@@ -20,7 +20,9 @@ public class Main {
         AlgorithmTester tester = new AlgorithmTester(repository);
 //        tester.runGreedyAlgorithm(cvrpData);
 //        tester.runRandomAlgorithm(cvrpData);
-        tester.runEvolutionaryAlgorithm(cvrpData);
+//        tester.runEvolutionaryAlgorithm(cvrpData);
+        tester.runTabuSearchAlgorithm(cvrpData);
+
     }
 
 }
