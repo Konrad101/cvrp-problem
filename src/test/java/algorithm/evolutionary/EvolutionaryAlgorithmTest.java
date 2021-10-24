@@ -10,7 +10,6 @@ import algorithm.evolutionary.mutation.SwapMutation;
 import algorithm.evolutionary.selection.RouletteSelection;
 import algorithm.evolutionary.selection.SelectionAlgorithm;
 import algorithm.evolutionary.selection.TournamentSelection;
-import algorithm.reparation.BasicRepairer;
 import algorithm.reparation.Repairer;
 import model.CvrpData;
 import model.SolvedPath;
@@ -46,7 +45,7 @@ class EvolutionaryAlgorithmTest extends TestBase {
                 new OrderedCrossover(repairer),
                 new SwapMutation(repairer),
                 repairer
-                );
+        );
 
         // when
         SolvedPath optimalPath = pathResolver.findOptimalPath(cvrpData);
@@ -141,11 +140,5 @@ class EvolutionaryAlgorithmTest extends TestBase {
 
         // then
         assertThatSolvedPathIsValid(optimalPath, truck);
-    }
-
-    private Repairer getRepairer(CvrpData cvrpData) {
-        return new BasicRepairer(
-                cvrpData.getDepotCity(),
-                cvrpData.getTruck());
     }
 }

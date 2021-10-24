@@ -1,6 +1,5 @@
-package algorithm.evolutionary;
+package algorithm.result;
 
-import algorithm.result.AlgorithmResult;
 
 public class PopulationResult extends AlgorithmResult {
 

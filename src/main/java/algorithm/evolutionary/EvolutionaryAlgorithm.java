@@ -7,6 +7,7 @@ import algorithm.evolutionary.selection.SelectionAlgorithm;
 import algorithm.random.RandomPathResolver;
 import algorithm.reparation.Repairer;
 import algorithm.result.AlgorithmResult;
+import algorithm.result.PopulationResult;
 import model.CvrpData;
 import model.SolvedPath;
 
@@ -21,7 +22,7 @@ public class EvolutionaryAlgorithm implements PathResolverAlgorithm {
 
     private static final Random random = new Random();
     private static final int POPULATION_SIZE = 100;
-    private static final int GENERATIONS_AMOUNT = 1000;
+    private static final int GENERATIONS_AMOUNT = 200;
 
     private static final double CROSSOVER_PROBABILITY = 0.7;
     private static final double MUTATION_PROBABILITY = 0.1;

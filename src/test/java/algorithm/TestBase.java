@@ -1,7 +1,10 @@
 package algorithm;
 
+import algorithm.reparation.BasicRepairer;
+import algorithm.reparation.Repairer;
 import file.repository.CvrpFileDataRepository;
 import file.repository.FileRepository;
+import model.CvrpData;
 import model.SolvedPath;
 import model.truck.Truck;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,5 +31,11 @@ public abstract class TestBase {
                 .doesNotSkipCities()
                 .isPossibleToRideByTruck(truck)
                 .startsAndEndsWithDepotCity();
+    }
+
+    protected Repairer getRepairer(CvrpData cvrpData) {
+        return new BasicRepairer(
+                cvrpData.getDepotCity(),
+                cvrpData.getTruck());
     }
 }
