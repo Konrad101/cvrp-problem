@@ -2,7 +2,7 @@ package launcher.tester;
 
 import algorithm.result.AlgorithmResult;
 import algorithm.result.PopulationResult;
-import algorithm.result.TabuSearchPopulationResult;
+import algorithm.result.PopulationResultWithCurrentElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import static algorithm.result.AlgorithmResult.calculateStandardDeviation;
 
 public class ResultPrinter {
 
-    void printResultForTabuSearch(List<TabuSearchPopulationResult> results) {
+    void printResultWithCurrentElement(List<PopulationResultWithCurrentElement> results) {
         List<PopulationResult> populationResults = new ArrayList<>(results);
         printResultForEvolutionary(populationResults);
     }

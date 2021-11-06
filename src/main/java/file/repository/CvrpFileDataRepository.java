@@ -1,7 +1,7 @@
 package file.repository;
 
 import algorithm.result.PopulationResult;
-import algorithm.result.TabuSearchPopulationResult;
+import algorithm.result.PopulationResultWithCurrentElement;
 import file.repository.reader.CvrpFileDataMapper;
 import model.CvrpData;
 
@@ -44,7 +44,7 @@ public class CvrpFileDataRepository implements FileRepository {
     }
 
     @Override
-    public void saveTabuSearchAlgorithmResult(String filePath, List<TabuSearchPopulationResult> iterationsResults) {
+    public void saveAlgorithmResultWithCurrentElement(String filePath, List<PopulationResultWithCurrentElement> iterationsResults) {
         List<String[]> fileData = iterationsResults.stream()
                 .map(result -> {
                     String[] rowData = new String[5];

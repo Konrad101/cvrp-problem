@@ -1,4 +1,4 @@
-package solution.evaluator;
+package solution.evaluation;
 
 import model.SolvedPath;
 import model.city.connection.CitiesConnection;

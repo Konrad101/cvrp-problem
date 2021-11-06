@@ -1,8 +1,8 @@
 package launcher.tester;
 
 import algorithm.PathResolverAlgorithm;
+import algorithm.annealing.SimulatedAnnealingAlgorithm;
 import algorithm.evolutionary.EvolutionaryAlgorithm;
-import algorithm.result.PopulationResult;
 import algorithm.evolutionary.crossover.CrossoverAlgorithm;
 import algorithm.evolutionary.crossover.OrderedCrossover;
 import algorithm.evolutionary.mutation.InvertMutation;
@@ -14,7 +14,8 @@ import algorithm.random.RandomPathResolver;
 import algorithm.reparation.BasicRepairer;
 import algorithm.reparation.Repairer;
 import algorithm.result.AlgorithmResult;
-import algorithm.result.TabuSearchPopulationResult;
+import algorithm.result.PopulationResult;
+import algorithm.result.PopulationResultWithCurrentElement;
 import algorithm.tabu.TabuSearchAlgorithm;
 import file.repository.FileRepository;
 import model.CvrpData;
@@ -25,15 +26,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static algorithm.result.AlgorithmResult.extractResultFromEvaluations;
-import static solution.evaluator.SolutionEvaluator.evaluate;
+import static solution.evaluation.SolutionEvaluator.evaluate;
 
 public class AlgorithmTester {
 
     private static final String EA_RESULTS_PATH = "results\\EA_results.csv";
     private static final String TS_RESULTS_PATH = "results\\TS_results.csv";
+    private static final String SA_RESULTS_PATH = "results\\SA_results.csv";
 
     private static final int EA_ALGORITHM_ITERATIONS = 10;
     private static final int TS_ALGORITHM_ITERATIONS = 10;
+    private static final int SA_ALGORITHM_ITERATIONS = 10;
     private static final int RANDOM_ALGORITHM_ITERATIONS = 100;
 
     private final FileRepository repository;
@@ -47,24 +50,44 @@ public class AlgorithmTester {
         this.resultCreator = new ResultCreator();
     }
 
+    public void runSimulatedAnnealingAlgorithm(CvrpData cvrpData) {
+        System.out.println("\nSIMULATED ANNEALING");
+
+        Repairer repairer = getRepairerForCvrpData(cvrpData);
+        Mutator mutator = new InvertMutation(repairer);
+
+        List<List<PopulationResultWithCurrentElement>> resultsFromAllIterations = new ArrayList<>();
+        for (int i = 0; i < SA_ALGORITHM_ITERATIONS; i++) {
+            SimulatedAnnealingAlgorithm resolver = new SimulatedAnnealingAlgorithm(mutator);
+
+            runAlgorithm(resolver, cvrpData);
+            resultsFromAllIterations.add(resolver.getResults());
+        }
+
+        List<PopulationResultWithCurrentElement> finalResult =
+                resultCreator.createResultFromAllIterationsSearchResultsWithCurrentElement(resultsFromAllIterations, SA_ALGORITHM_ITERATIONS);
+        repository.saveAlgorithmResultWithCurrentElement(SA_RESULTS_PATH, finalResult);
+        resultPrinter.printResultWithCurrentElement(finalResult);
+    }
+
     public void runTabuSearchAlgorithm(CvrpData cvrpData) {
         System.out.println("\nTABU SEARCH");
 
         Repairer repairer = getRepairerForCvrpData(cvrpData);
         Mutator mutator = new InvertMutation(repairer);
 
-        List<List<TabuSearchPopulationResult>> resultsFromAllIterations = new ArrayList<>();
-        for(int i = 0; i < TS_ALGORITHM_ITERATIONS; i++) {
+        List<List<PopulationResultWithCurrentElement>> resultsFromAllIterations = new ArrayList<>();
+        for (int i = 0; i < TS_ALGORITHM_ITERATIONS; i++) {
             TabuSearchAlgorithm resolver = new TabuSearchAlgorithm(mutator);
 
             runAlgorithm(resolver, cvrpData);
             resultsFromAllIterations.add(resolver.getResults());
         }
 
-        List<TabuSearchPopulationResult> finalResult =
-                resultCreator.createResultFromAllIterationsTabuSearchResults(resultsFromAllIterations, TS_ALGORITHM_ITERATIONS);
-        repository.saveTabuSearchAlgorithmResult(TS_RESULTS_PATH, finalResult);
-        resultPrinter.printResultForTabuSearch(finalResult);
+        List<PopulationResultWithCurrentElement> finalResult =
+                resultCreator.createResultFromAllIterationsSearchResultsWithCurrentElement(resultsFromAllIterations, TS_ALGORITHM_ITERATIONS);
+        repository.saveAlgorithmResultWithCurrentElement(TS_RESULTS_PATH, finalResult);
+        resultPrinter.printResultWithCurrentElement(finalResult);
     }
 
     public void runEvolutionaryAlgorithm(CvrpData cvrpData) {
@@ -123,7 +146,6 @@ public class AlgorithmTester {
         SolutionProviderService providerService = new SolutionProviderService(resolver, cvrpData);
         return providerService.getSolution();
     }
-
 
 
     private Repairer getRepairerForCvrpData(CvrpData cvrpData) {

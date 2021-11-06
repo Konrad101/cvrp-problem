@@ -1,7 +1,7 @@
 package file.repository;
 
 import algorithm.result.PopulationResult;
-import algorithm.result.TabuSearchPopulationResult;
+import algorithm.result.PopulationResultWithCurrentElement;
 import model.CvrpData;
 
 import java.util.List;
@@ -12,6 +12,6 @@ public interface FileRepository {
 
     void saveEvolutionaryAlgorithmResult(String filePath, List<PopulationResult> result);
 
-    void saveTabuSearchAlgorithmResult(String filePath, List<TabuSearchPopulationResult> result);
+    void saveAlgorithmResultWithCurrentElement(String filePath, List<PopulationResultWithCurrentElement> result);
 
 }

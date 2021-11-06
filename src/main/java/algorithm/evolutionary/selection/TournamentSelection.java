@@ -5,7 +5,7 @@ import model.SolvedPath;
 import java.util.List;
 import java.util.Random;
 
-import static solution.evaluator.SolutionEvaluator.evaluate;
+import static solution.evaluation.SolutionEvaluator.evaluate;
 
 
 public class TournamentSelection implements SelectionAlgorithm {

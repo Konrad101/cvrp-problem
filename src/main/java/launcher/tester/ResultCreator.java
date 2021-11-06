@@ -1,14 +1,14 @@
 package launcher.tester;
 
 import algorithm.result.PopulationResult;
-import algorithm.result.TabuSearchPopulationResult;
+import algorithm.result.PopulationResultWithCurrentElement;
 
 import java.util.*;
 
 public class ResultCreator {
 
-    public List<TabuSearchPopulationResult> createResultFromAllIterationsTabuSearchResults(
-            List<List<TabuSearchPopulationResult>> results,
+    public List<PopulationResultWithCurrentElement> createResultFromAllIterationsSearchResultsWithCurrentElement(
+            List<List<PopulationResultWithCurrentElement>> results,
             int algorithmIterations
     ) {
         List<List<PopulationResult>> populationResults = new ArrayList<>();
@@ -40,7 +40,7 @@ public class ResultCreator {
         // to get best
         Map<Integer, Double> bestEvaluationsForEachIteration = getBestEvaluationsForEachIteration(populationResults);
 
-        List<TabuSearchPopulationResult> tabuSearchResults = new ArrayList<>();
+        List<PopulationResultWithCurrentElement> tabuSearchResults = new ArrayList<>();
         for (int populationNumber = 1; populationNumber <= populationsAmount; populationNumber++) {
 
             Double sumOfCurrentsForCurrentPopulation = sumOfCurrentForEachPopulation.get(populationNumber);
@@ -51,7 +51,7 @@ public class ResultCreator {
             double averageWorst = populationResult.getWorstElementValue();
             double averageFromAverages = populationResult.getAverageElementValue();
 
-            tabuSearchResults.add(new TabuSearchPopulationResult(
+            tabuSearchResults.add(new PopulationResultWithCurrentElement(
                     populationNumber,
                     averageBest,
                     averageWorst,

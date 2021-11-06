@@ -8,7 +8,7 @@ import model.truck.Truck;
 
 import java.util.List;
 
-import static solution.evaluator.SolutionEvaluator.evaluate;
+import static solution.evaluation.SolutionEvaluator.evaluate;
 
 public class SolutionPresenter {
 

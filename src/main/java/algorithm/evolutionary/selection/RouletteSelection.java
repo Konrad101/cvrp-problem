@@ -1,13 +1,13 @@
 package algorithm.evolutionary.selection;
 
 import model.SolvedPath;
-import solution.evaluator.SolutionEvaluator;
+import solution.evaluation.SolutionEvaluator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static solution.evaluator.SolutionEvaluator.evaluate;
+import static solution.evaluation.SolutionEvaluator.evaluate;
 
 public class RouletteSelection implements SelectionAlgorithm {
 

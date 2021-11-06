@@ -5,17 +5,18 @@ import algorithm.evolutionary.mutation.Mutator;
 import algorithm.random.RandomPathResolver;
 import algorithm.reparation.BasicRepairer;
 import algorithm.reparation.Repairer;
-import algorithm.result.TabuSearchPopulationResult;
+import algorithm.result.PopulationResultWithCurrentElement;
 import model.CvrpData;
 import model.SolvedPath;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import solution.evaluation.SolutionEvaluation;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static solution.evaluator.SolutionEvaluator.evaluate;
+import static algorithm.result.PopulationResultWithCurrentElement.extractResultWithCurrentElementWithSolutionEvaluationNeighbourhood;
 
 public class TabuSearchAlgorithm implements PathResolverAlgorithm {
 
@@ -23,7 +24,7 @@ public class TabuSearchAlgorithm implements PathResolverAlgorithm {
     private static final int NEIGHBOURHOOD_SIZE = 10;
     private static final int TABU_SIZE = 100;
 
-    private final List<TabuSearchPopulationResult> results;
+    private final List<PopulationResultWithCurrentElement> results;
 
     private final Mutator mutator;
 
@@ -32,7 +33,7 @@ public class TabuSearchAlgorithm implements PathResolverAlgorithm {
         this.results = new ArrayList<>();
     }
 
-    public List<TabuSearchPopulationResult> getResults() {
+    public List<PopulationResultWithCurrentElement> getResults() {
         return results;
     }
 
@@ -45,7 +46,7 @@ public class TabuSearchAlgorithm implements PathResolverAlgorithm {
 
         int iterationNumber = 0;
         while (iterationNumber < MAX_ALGORITHM_ITERATIONS) {
-            List<SolutionEvaluation> neighbourhood = getNeighboursForSolution(currentSolutionEvaluation.getSolution());
+            Collection<SolutionEvaluation> neighbourhood = getNeighboursForSolution(currentSolutionEvaluation.getSolution());
 
             SolutionEvaluation bestNeighbour = extractBestNeighbour(neighbourhood, tabuCollection);
 
@@ -57,7 +58,7 @@ public class TabuSearchAlgorithm implements PathResolverAlgorithm {
             currentSolutionEvaluation = bestNeighbour;
 
             iterationNumber++;
-            results.add(extractTabuSearchResult(
+            results.add(extractResultWithCurrentElementWithSolutionEvaluationNeighbourhood(
                     iterationNumber,
                     neighbourhood,
                     bestSolutionEvaluation.getEvaluation(),
@@ -65,35 +66,6 @@ public class TabuSearchAlgorithm implements PathResolverAlgorithm {
         }
 
         return bestSolutionEvaluation.getSolution();
-    }
-
-    private TabuSearchPopulationResult extractTabuSearchResult(
-            int iterationNumber,
-            Collection<SolutionEvaluation> neighbourhood,
-            double bestSolutionEvaluation,
-            double currentSolutionEvaluation) {
-
-        double sumOfNeighboursEvaluations = 0;
-        double worstNeighbourEvaluation = Double.MIN_VALUE;
-
-        for(SolutionEvaluation neighbour: neighbourhood) {
-
-            sumOfNeighboursEvaluations += neighbour.getEvaluation();
-
-            if (worstNeighbourEvaluation < neighbour.getEvaluation()) {
-                worstNeighbourEvaluation = neighbour.getEvaluation();
-            }
-        }
-
-        double averageSolutionEvaluation = sumOfNeighboursEvaluations / neighbourhood.size();
-
-        return new TabuSearchPopulationResult(
-                iterationNumber,
-                bestSolutionEvaluation,
-                worstNeighbourEvaluation,
-                averageSolutionEvaluation,
-                currentSolutionEvaluation
-        );
     }
 
     private List<SolutionEvaluation> getNeighboursForSolution(SolvedPath solution) {
@@ -109,7 +81,7 @@ public class TabuSearchAlgorithm implements PathResolverAlgorithm {
         return neighbours;
     }
 
-    private SolutionEvaluation extractBestNeighbour(List<SolutionEvaluation> neighbourhood, Collection<SolvedPath> tabuSolutions) {
+    private SolutionEvaluation extractBestNeighbour(Collection<SolutionEvaluation> neighbourhood, Collection<SolvedPath> tabuSolutions) {
         List<SolutionEvaluation> neighboursNotPresentInTabu = neighbourhood.stream()
                 .filter(neighbour -> !tabuSolutions.contains(neighbour.getSolution()))
                 .collect(Collectors.toUnmodifiableList());
@@ -136,21 +108,4 @@ public class TabuSearchAlgorithm implements PathResolverAlgorithm {
         return new BasicRepairer(cvrpData.getDepotCity(), cvrpData.getTruck());
     }
 
-    private static class SolutionEvaluation {
-        private final SolvedPath solution;
-        private final double evaluation;
-
-        public SolutionEvaluation(SolvedPath solution) {
-            this.solution = solution;
-            this.evaluation = evaluate(solution);
-        }
-
-        public SolvedPath getSolution() {
-            return solution;
-        }
-
-        public double getEvaluation() {
-            return evaluation;
-        }
-    }
 }
