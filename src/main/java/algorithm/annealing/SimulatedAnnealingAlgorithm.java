@@ -22,6 +22,7 @@ public class SimulatedAnnealingAlgorithm implements PathResolverAlgorithm {
     private static final int NEIGHBOURHOOD_SIZE = 10;
 
     private static final double TEMPERATURE = 5000;
+    private static final double END_TEMPERATURE = 1;
     private static final double COOLING_FACTOR = 0.99999;
 
     private final List<PopulationResultWithCurrentElement> results;
@@ -101,7 +102,7 @@ public class SimulatedAnnealingAlgorithm implements PathResolverAlgorithm {
 
     private boolean stopConditionOccurs(int currentAlgorithmIteration, double currentTemperature) {
         return currentAlgorithmIteration > MAX_ALGORITHM_ITERATIONS
-                || currentTemperature <= 1;
+                || currentTemperature <= END_TEMPERATURE;
     }
 
     private double probability(double firstEvaluation, double secondEvaluation, double temperature) {
