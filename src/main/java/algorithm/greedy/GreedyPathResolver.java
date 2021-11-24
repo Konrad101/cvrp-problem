@@ -14,6 +14,8 @@ import static model.city.CityDistanceCalculator.calculateDistance;
 
 public class GreedyPathResolver implements PathResolverAlgorithm {
 
+    private final Random random = new Random();
+
     @Override
     public SolvedPath findOptimalPath(CvrpData cvrpData) {
         DeliveryCitiesMap deliveryCitiesMap = cvrpData.getDeliveryCitiesMap();
@@ -34,7 +36,17 @@ public class GreedyPathResolver implements PathResolverAlgorithm {
 
         City originCity = depotCity;
         truck.load();
+
+        City firstCity = getRandomCity(citiesWithoutConnection);
+
+        connections.add(
+                new CitiesConnection(originCity, firstCity));
+        truck.unload(firstCity.getDemand());
+
         citiesWithoutConnection.remove(originCity);
+        citiesWithoutConnection.remove(firstCity);
+
+        originCity = firstCity;
 
         while (!citiesWithoutConnection.isEmpty()) {
             City destinationCity = getClosestCity(originCity, citiesWithoutConnection);
@@ -59,6 +71,24 @@ public class GreedyPathResolver implements PathResolverAlgorithm {
 
         addLastConnectionToDepotIfNecessary(connections, depotCity);
         return connections;
+    }
+
+    private City getRandomCity(Set<City> cities) {
+
+        int randomCityPosition = random.nextInt(cities.size());
+        Iterator<City> citiesIterator = cities.stream().iterator();
+
+        int currentCityPosition = 0;
+        while(citiesIterator.hasNext()) {
+            City currentCity = citiesIterator.next();
+            if (currentCityPosition == randomCityPosition) {
+                return currentCity;
+            }
+
+            currentCityPosition++;
+        }
+
+        return cities.iterator().next();
     }
 
     private void addLastConnectionToDepotIfNecessary(List<CitiesConnection> connections, City depotCity) {
